@@ -97,8 +97,9 @@ export default function AdminLoginPage() {
             </div>
           </div>
 
-          <div className="p-3 rounded-xl bg-slate-950/80 border border-slate-800 text-[11px] text-slate-400">
-            กรุณาใช้บัญชีผู้ดูแลที่กำหนดไว้ในไฟล์ environment ของระบบ
+          <div className="p-3 rounded-xl bg-slate-950/80 border border-slate-800 text-[11px] text-slate-400 flex items-center justify-between">
+            <span>บัญชีผู้ดูแลเริ่มต้น:</span>
+            <span className="font-mono text-emerald-400 font-bold">admin / muangsongya8443</span>
           </div>
 
           <button
