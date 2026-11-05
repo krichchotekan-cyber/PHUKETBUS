@@ -34,6 +34,7 @@ import {
   Send,
   Bell,
   MessageSquare,
+  RefreshCw,
 } from 'lucide-react';
 import {
   DatabaseSchema,
@@ -111,10 +112,20 @@ export default function AdminDashboard({ initialData }: AdminDashboardProps) {
   const handleSaveSettings = async () => {
     setSaveStatus('กำลังบันทึก...');
     try {
+      const pageId = settings.seo?.facebookPageId || settings.facebookPageId;
+      const payload = {
+        ...settings,
+        facebookPageId: pageId,
+        seo: {
+          ...settings.seo,
+          facebookPageId: pageId,
+        },
+      };
+
       const res = await fetch('/api/settings', {
         method: 'PUT',
         headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify(settings),
+        body: JSON.stringify(payload),
       });
       if (res.ok) {
         setSaveStatus('บันทึกข้อมูลเรียบร้อยแล้ว');
@@ -186,6 +197,73 @@ export default function AdminDashboard({ initialData }: AdminDashboardProps) {
       setTelegramStatus(`❌ เกิดข้อผิดพลาด: ${e.message}`);
     } finally {
       setTelegramLoading(false);
+    }
+  };
+
+  // Facebook Feed & CAPI testing states
+  const [fbFeedLoading, setFbFeedLoading] = useState<boolean>(false);
+  const [fbFeedStatus, setFbFeedStatus] = useState<string>('');
+  const [fbCapiLoading, setFbCapiLoading] = useState<boolean>(false);
+  const [fbCapiStatus, setFbCapiStatus] = useState<string>('');
+  const [fbTestCode, setFbTestCode] = useState<string>('');
+
+  const handleTestFacebookFeed = async () => {
+    setFbFeedLoading(true);
+    setFbFeedStatus('กำลังเชื่อมต่อไปยัง Facebook Graph API เพื่อดึงโพสต์ล่าสุด...');
+    try {
+      const pageId = settings.seo?.facebookPageId || settings.facebookPageId || '';
+      const token = settings.seo?.facebookAccessToken || '';
+      const url = `/api/facebook/feed?test=true&pageId=${encodeURIComponent(
+        pageId
+      )}&token=${encodeURIComponent(token)}`;
+
+      const res = await fetch(url);
+      const data = await res.json();
+
+      if (res.ok && data.success) {
+        setFbFeedStatus(`✅ ${data.message}`);
+      } else {
+        setFbFeedStatus(`⚠️ ${data.error || 'ไม่สามารถดึงโพสต์จาก Facebook ได้'}`);
+      }
+    } catch (e: any) {
+      setFbFeedStatus(`❌ เกิดข้อผิดพลาด: ${e.message}`);
+    } finally {
+      setFbFeedLoading(false);
+    }
+  };
+
+  const handleTestFacebookCapi = async () => {
+    setFbCapiLoading(true);
+    setFbCapiStatus('กำลังส่ง Event ทดสอบไปยัง Facebook Conversions API...');
+    try {
+      const res = await fetch('/api/facebook/capi', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          testMode: true,
+          eventName: 'Lead',
+          testEventCode: fbTestCode.trim() || undefined,
+          customPixelId: settings.seo?.facebookPixelId,
+          customAccessToken: settings.seo?.facebookAccessToken,
+          phone: '0964638443',
+          customData: {
+            content_name: 'Test Event from PhuketBus Admin',
+            status: 'verified_from_admin',
+          },
+        }),
+      });
+      const data = await res.json();
+
+      if (res.ok && data.success) {
+        const trace = data.fbTraceId ? ` (Trace ID: ${data.fbTraceId})` : '';
+        setFbCapiStatus(`✅ ส่ง Event สำเร็จ! Meta ได้รับแล้ว ${data.eventsReceived || 1} Event${trace}`);
+      } else {
+        setFbCapiStatus(`⚠️ ${data.error || 'ส่งข้อมูลไปยัง CAPI ไม่สำเร็จ กรุณาตรวจสอบ Pixel ID หรือ Access Token'}`);
+      }
+    } catch (e: any) {
+      setFbCapiStatus(`❌ เกิดข้อผิดพลาด: ${e.message}`);
+    } finally {
+      setFbCapiLoading(false);
     }
   };
 
@@ -1495,76 +1573,211 @@ export default function AdminDashboard({ initialData }: AdminDashboardProps) {
                 />
               </div>
 
-              {/* Facebook Pixel & CAPI Box */}
-              <div className="p-5 rounded-2xl bg-blue-950/40 border border-blue-600/40 space-y-4">
-                <div className="flex items-center gap-2 text-blue-300 font-bold text-sm">
-                  <Share2 className="w-4 h-4" />
-                  <span>การตั้งค่า Facebook Pixel & Conversions API (CAPI)</span>
+              {/* Facebook Graph API, Pixel & CAPI Suite */}
+              <div className="p-5 sm:p-6 rounded-2xl bg-blue-950/30 border border-blue-500/40 space-y-6">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-blue-500/30 pb-4">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-blue-600/20 text-blue-400 flex items-center justify-center font-bold">
+                      <Share2 className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm sm:text-base font-bold text-white flex items-center gap-2">
+                        <span>Facebook Integration (Graph API, Pixel & Conversions API)</span>
+                        <span className="text-[10px] bg-blue-500/20 text-blue-300 px-2 py-0.5 rounded-full border border-blue-500/30">
+                          ซิงค์โพสต์ & แทร็ก Conversion
+                        </span>
+                      </h3>
+                      <p className="text-xs text-slate-400">
+                        ดึงโพสต์จากหน้า Facebook Fanpage มาแสดงบนเว็บ พร้อมระบบแทร็กผลลัพธ์ผ่าน Meta Pixel และ CAPI 2 ทาง
+                      </p>
+                    </div>
+                  </div>
                 </div>
 
-                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                  <div>
-                    <label className="block text-xs font-semibold text-slate-300 mb-1">
-                      Facebook Pixel ID
-                    </label>
-                    <input
-                      type="text"
-                      placeholder="เช่น 123456789012345"
-                      value={settings.seo?.facebookPixelId || ''}
-                      onChange={(e) =>
-                        setSettings({
-                          ...settings,
-                          seo: { ...settings.seo, facebookPixelId: e.target.value },
-                        })
-                      }
-                      className="w-full px-3.5 py-2 rounded-xl bg-slate-950 border border-slate-700 text-white text-xs sm:text-sm focus:border-blue-400 focus:outline-none"
-                    />
+                {/* Sub-card 1: Facebook Page & Feed Sync */}
+                <div className="p-4 rounded-xl bg-slate-950/80 border border-blue-500/20 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2 text-xs font-bold text-blue-300">
+                      <ExternalLink className="w-4 h-4 text-blue-400" />
+                      <span>1. การเชื่อมต่อ Facebook Fanpage เพื่อดึงโพสต์ (Feed Showcase)</span>
+                    </div>
+                    <span className="text-[10px] text-slate-400">Graph API v19.0</span>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-300 mb-1">
+                        Facebook Page ID / Username
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="เช่น muangsongyatour หรือตัวเลข 1000..."
+                        value={settings.seo?.facebookPageId || ''}
+                        onChange={(e) =>
+                          setSettings({
+                            ...settings,
+                            facebookPageId: e.target.value,
+                            seo: { ...settings.seo, facebookPageId: e.target.value },
+                          })
+                        }
+                        className="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs sm:text-sm focus:border-blue-400 focus:outline-none"
+                      />
+                      <p className="text-[11px] text-slate-400 mt-1">
+                        ชื่อหรือ ID ของเพจ เช่น <code>muangsongyatour</code> (หน้าเพจเมืองสองย่า ทรานสปอร์ต แอนด์ ทัวร์)
+                      </p>
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-300 mb-1">
+                        ลิงก์ Facebook Fanpage (URL)
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="https://facebook.com/muangsongyatour"
+                        value={settings.facebookPageUrl || ''}
+                        onChange={(e) =>
+                          setSettings({
+                            ...settings,
+                            facebookPageUrl: e.target.value,
+                          })
+                        }
+                        className="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs sm:text-sm focus:border-blue-400 focus:outline-none"
+                      />
+                      <p className="text-[11px] text-slate-400 mt-1">
+                        ใช้สำหรับปุ่ม &quot;ดูโพสต์ทั้งหมดบน Facebook&quot; ของผู้เข้าชม
+                      </p>
+                    </div>
+                  </div>
+
+                  {fbFeedStatus && (
+                    <div className="p-3 rounded-xl bg-slate-900 border border-blue-500/50 text-xs font-semibold text-blue-200">
+                      {fbFeedStatus}
+                    </div>
+                  )}
+
+                  <div className="flex flex-wrap items-center gap-3 pt-1">
+                    <button
+                      type="button"
+                      onClick={handleTestFacebookFeed}
+                      disabled={fbFeedLoading}
+                      className="py-2 px-3.5 rounded-xl bg-blue-700 hover:bg-blue-600 text-white text-xs font-bold flex items-center gap-1.5 shadow transition active:scale-95 cursor-pointer disabled:opacity-50"
+                    >
+                      <RefreshCw className={`w-3.5 h-3.5 ${fbFeedLoading ? 'animate-spin' : ''}`} />
+                      <span>{fbFeedLoading ? 'กำลังทดสอบ...' : '⚡ ทดสอบดึงโพสต์จาก Facebook'}</span>
+                    </button>
+                    <span className="text-[11px] text-slate-400">
+                      * หากยังไม่ได้กรอก Access Token ระบบจะแสดงข้อมูลโพสต์ตัวอย่างทริปเสมือนจริงให้โดยอัตโนมัติ
+                    </span>
+                  </div>
+                </div>
+
+                {/* Sub-card 2: Facebook Pixel & Conversions API (CAPI) */}
+                <div className="p-4 rounded-xl bg-slate-950/80 border border-blue-500/20 space-y-3">
+                  <div className="flex items-center justify-between">
+                    <div className="flex items-center gap-2 text-xs font-bold text-blue-300">
+                      <ShieldCheck className="w-4 h-4 text-blue-400" />
+                      <span>2. Facebook Pixel & Conversions API (CAPI Server-side Tracking)</span>
+                    </div>
+                    <span className="text-[10px] text-emerald-400 font-semibold">Dual-Tracking พร้อมใช้งาน</span>
+                  </div>
+
+                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-300 mb-1">
+                        Facebook Pixel ID
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="เช่น 123456789012345"
+                        value={settings.seo?.facebookPixelId || ''}
+                        onChange={(e) =>
+                          setSettings({
+                            ...settings,
+                            seo: { ...settings.seo, facebookPixelId: e.target.value },
+                          })
+                        }
+                        className="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs sm:text-sm focus:border-blue-400 focus:outline-none"
+                      />
+                    </div>
+
+                    <div>
+                      <label className="block text-xs font-semibold text-slate-300 mb-1">
+                        Test Event Code (สำหรับทดสอบใน Meta Events Manager)
+                      </label>
+                      <input
+                        type="text"
+                        placeholder="เช่น TEST12345 (เว้นว่างได้ถ้าใช้งานจริง)"
+                        value={fbTestCode}
+                        onChange={(e) => setFbTestCode(e.target.value)}
+                        className="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs sm:text-sm focus:border-blue-400 focus:outline-none"
+                      />
+                    </div>
                   </div>
 
                   <div>
                     <label className="block text-xs font-semibold text-slate-300 mb-1">
-                      Facebook Page ID
+                      Facebook Access Token (System User Access Token / CAPI Token)
                     </label>
                     <input
-                      type="text"
-                      placeholder="เช่น muangsongyatour หรือตัวเลข Page ID"
-                      value={settings.seo?.facebookPageId || ''}
+                      type="password"
+                      placeholder="EAAGm0PX4ZC... (ใช้สำหรับทั้งดึง Feed โพสต์ และส่ง Server-side Event)"
+                      value={settings.seo?.facebookAccessToken || ''}
                       onChange={(e) =>
                         setSettings({
                           ...settings,
-                          seo: { ...settings.seo, facebookPageId: e.target.value },
+                          seo: { ...settings.seo, facebookAccessToken: e.target.value },
                         })
                       }
-                      className="w-full px-3.5 py-2 rounded-xl bg-slate-950 border border-slate-700 text-white text-xs sm:text-sm focus:border-blue-400 focus:outline-none"
+                      className="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs sm:text-sm focus:border-blue-400 focus:outline-none font-mono"
                     />
+                    <p className="text-[11px] text-slate-400 mt-1">
+                      สามารถสร้างได้จาก <em>Meta Events Manager &gt; การตั้งค่า &gt; Conversions API &gt; สร้างโทเค็นการเข้าถึง</em> หรือจาก <em>Meta Business Settings &gt; System Users</em>
+                    </p>
+                  </div>
+
+                  {fbCapiStatus && (
+                    <div className="p-3 rounded-xl bg-slate-900 border border-blue-500/50 text-xs font-semibold text-blue-200">
+                      {fbCapiStatus}
+                    </div>
+                  )}
+
+                  <div className="flex flex-wrap items-center gap-3 pt-1">
+                    <button
+                      type="button"
+                      onClick={handleTestFacebookCapi}
+                      disabled={fbCapiLoading}
+                      className="py-2 px-3.5 rounded-xl bg-indigo-700 hover:bg-indigo-600 text-white text-xs font-bold flex items-center gap-1.5 shadow transition active:scale-95 cursor-pointer disabled:opacity-50"
+                    >
+                      <Send className="w-3.5 h-3.5" />
+                      <span>{fbCapiLoading ? 'กำลังส่ง Event...' : '🧪 ทดสอบส่ง Event ไปยัง Facebook CAPI'}</span>
+                    </button>
+                  </div>
+
+                  <div className="text-[11px] text-slate-400 leading-relaxed pt-2 border-t border-slate-800">
+                    <div className="font-semibold text-slate-300 mb-1">เหตุการณ์ (Standard Events) ที่ระบบบันทึกอัตโนมัติ:</div>
+                    <ul className="list-disc pl-5 space-y-0.5 text-blue-200">
+                      <li><code>PageView</code>: บันทึกทันทีเมื่อมีผู้เข้าชมเว็บไซต์</li>
+                      <li><code>Contact</code>: บันทึกเมื่อผู้ชมกดโทรด่วน 096-463-8443 / 081-059-6350, กดคัดลอกเบอร์ หรือกดปุ่ม LINE</li>
+                      <li><code>Lead</code>: บันทึกเมื่อผู้ชมส่งฟอร์มขอใบเสนอราคาเช่ารถทัวร์เหมาคัน</li>
+                      <li><code>ViewContent</code>: บันทึกเมื่อผู้ชมเปิดดูโปรโมชั่นหรือรายละเอียดสเปกรถ</li>
+                    </ul>
                   </div>
                 </div>
 
-                <div>
-                  <label className="block text-xs font-semibold text-slate-300 mb-1">
-                    Facebook Conversions API (CAPI) System User Access Token
-                  </label>
-                  <input
-                    type="password"
-                    placeholder="EAAGm0PX4ZC... (กรอกเพื่อส่ง Server-side Event อัตโนมัติเมื่อลูกค้าขอใบเสนอราคา)"
-                    value={settings.seo?.facebookAccessToken || ''}
-                    onChange={(e) =>
-                      setSettings({
-                        ...settings,
-                        seo: { ...settings.seo, facebookAccessToken: e.target.value },
-                      })
-                    }
-                    className="w-full px-3.5 py-2 rounded-xl bg-slate-950 border border-slate-700 text-white text-xs sm:text-sm focus:border-blue-400 focus:outline-none font-mono"
-                  />
-                </div>
+                <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-blue-500/20">
+                  <div className="text-xs text-blue-300 flex items-center gap-1.5">
+                    <CheckCircle className="w-4 h-4 text-emerald-400" />
+                    <span>ข้อมูลจะถูกนำไปใช้ในหน้าเว็บและระบบหลังบ้านทันทีหลังกดบันทึก</span>
+                  </div>
 
-                <div className="text-[11px] text-slate-400 leading-relaxed">
-                  ระบบได้เตรียม Event Tracking:
-                  <ul className="list-disc pl-5 mt-1 space-y-0.5 text-blue-200">
-                    <li><code>Contact</code>: เมื่อผู้ชมกดปุ่มโทรด่วน, คัดลอกเบอร์โทร 096-463-8443 หรือ 081-059-6350</li>
-                    <li><code>Lead</code>: เมื่อผู้ชมกดส่งฟอร์มขอใบเสนอราคาเช่าเหมาคัน</li>
-                    <li><code>ViewContent</code>: เมื่อผู้ชมคลิกดูผังที่นั่งจำลองเหมาคัน</li>
-                  </ul>
+                  <button
+                    type="button"
+                    onClick={handleSaveSettings}
+                    className="py-2.5 px-4 rounded-xl bg-emerald-800 hover:bg-emerald-700 text-white text-xs font-bold flex items-center gap-1.5 shadow transition cursor-pointer"
+                  >
+                    <Save className="w-3.5 h-3.5" />
+                    <span>บันทึกการตั้งค่า Facebook & SEO</span>
+                  </button>
                 </div>
               </div>
 

@@ -1,30 +1,108 @@
 import { NextResponse } from 'next/server';
 import { getDatabase } from '@/lib/db';
 
-export async function GET() {
+export async function GET(request: Request) {
   try {
-    const db = getDatabase();
-    const pageId = db.settings.facebookPageId;
-    const token = db.settings.seo?.facebookAccessToken;
+    const { searchParams } = new URL(request.url);
+    const isTest = searchParams.get('test') === 'true';
+    const queryPageId = searchParams.get('pageId');
+    const queryToken = searchParams.get('token');
 
-    // If real Facebook Page Access Token is provided, fetch live posts from Graph API
-    if (pageId && token) {
+    const db = getDatabase();
+    const pageId =
+      queryPageId ||
+      process.env.FACEBOOK_PAGE_ID ||
+      process.env.FB_PAGE_ID ||
+      db.settings.seo?.facebookPageId ||
+      db.settings.facebookPageId;
+
+    const token =
+      queryToken ||
+      process.env.FACEBOOK_PAGE_ACCESS_TOKEN ||
+      process.env.FB_PAGE_ACCESS_TOKEN ||
+      process.env.FACEBOOK_ACCESS_TOKEN ||
+      db.settings.seo?.facebookAccessToken;
+
+    // Test mode requested from Admin Dashboard
+    if (isTest) {
+      if (!pageId || !token) {
+        return NextResponse.json({
+          success: false,
+          error: 'กรุณากรอกทั้ง Facebook Page ID และ Facebook Access Token ให้ครบถ้วน',
+          pageId: pageId || null,
+          hasToken: !!token,
+        });
+      }
+
+      const url = `https://graph.facebook.com/v19.0/${encodeURIComponent(
+        pageId
+      )}/posts?fields=id,message,story,created_time,full_picture,permalink_url,shares,reactions.summary(total_count)&access_token=${encodeURIComponent(
+        token
+      )}&limit=6`;
+
       try {
-        const url = `https://graph.facebook.com/v19.0/${pageId}/posts?fields=id,message,created_time,full_picture,permalink_url&access_token=${token}&limit=6`;
-        const res = await fetch(url, { next: { revalidate: 3600 } });
-        if (res.ok) {
-          const data = await res.json();
+        const res = await fetch(url, { cache: 'no-store' });
+        const data = await res.json();
+
+        if (!res.ok) {
           return NextResponse.json({
-            source: 'facebook_graph_api',
-            posts: data.data || [],
+            success: false,
+            error: data?.error?.message || 'เชื่อมต่อ Facebook Graph API ล้มเหลว',
+            fbError: data?.error,
           });
         }
-      } catch (e) {
-        console.warn('Facebook Graph API fetch error, falling back to cached posts');
+
+        const count = Array.isArray(data.data) ? data.data.length : 0;
+        return NextResponse.json({
+          success: true,
+          message: `เชื่อมต่อสำเร็จ! ดึงโพสต์ล่าสุดได้ทั้งหมด ${count} โพสต์`,
+          postCount: count,
+          sample: data.data?.[0] || null,
+        });
+      } catch (err: any) {
+        return NextResponse.json({
+          success: false,
+          error: `เกิดข้อผิดพลาดในการเชื่อมต่อเน็ตเวิร์ก: ${err.message}`,
+        });
       }
     }
 
-    // Curated real-life style Facebook trip posts fallback
+    // Normal client feed fetch:
+    // If real Facebook Page Access Token is provided, fetch live posts from Graph API
+    if (pageId && token) {
+      try {
+        const url = `https://graph.facebook.com/v19.0/${encodeURIComponent(
+          pageId
+        )}/posts?fields=id,message,story,created_time,full_picture,permalink_url,shares,reactions.summary(total_count)&access_token=${encodeURIComponent(
+          token
+        )}&limit=6`;
+
+        const res = await fetch(url, { next: { revalidate: 1800 } });
+        if (res.ok) {
+          const data = await res.json();
+          if (Array.isArray(data.data) && data.data.length > 0) {
+            const formattedPosts = data.data.map((post: any) => ({
+              id: post.id,
+              message: post.message || post.story || 'อัปเดตการเดินทางกับเมืองสองย่า ทรานสปอร์ต แอนด์ ทัวร์ ภูเก็ต',
+              created_time: post.created_time,
+              full_picture: post.full_picture || 'https://images.unsplash.com/photo-1544620347-c4fd4a3d5957?auto=format&fit=crop&w=800&q=80',
+              permalink_url: post.permalink_url || `https://facebook.com/${pageId}`,
+              likes: post.reactions?.summary?.total_count || 45,
+              shares: post.shares?.count || 8,
+            }));
+
+            return NextResponse.json({
+              source: 'facebook_graph_api',
+              posts: formattedPosts,
+            });
+          }
+        }
+      } catch (e) {
+        console.warn('Facebook Graph API fetch error, falling back to curated posts:', e);
+      }
+    }
+
+    // Curated real-life style Facebook trip posts fallback (used when no token or API rate limited)
     const fallbackPosts = [
       {
         id: 'fb-1',
@@ -59,7 +137,7 @@ export async function GET() {
       source: 'curated_showcase',
       posts: fallbackPosts,
     });
-  } catch (error) {
-    return NextResponse.json({ error: 'Failed to fetch posts' }, { status: 500 });
+  } catch (error: any) {
+    return NextResponse.json({ error: 'Failed to fetch posts', message: error.message }, { status: 500 });
   }
 }

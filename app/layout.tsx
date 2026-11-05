@@ -77,8 +77,8 @@ export async function generateMetadata(): Promise<Metadata> {
       apple: [{ url: '/icon.png' }],
     },
     other: {
-      'fb:page_id': seo.facebookPageId || 'YOUR_FACEBOOK_PAGE_ID',
-      'fb:app_id': seo.facebookAppId || 'YOUR_FACEBOOK_APP_ID',
+      'fb:page_id': seo.facebookPageId || 'muangsongyatour',
+      'fb:app_id': seo.facebookAppId || '',
     },
   };
 }
