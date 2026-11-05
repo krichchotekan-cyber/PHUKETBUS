@@ -1,5 +1,6 @@
 import fs from 'fs';
 import path from 'path';
+import databaseTemplate from '@/data/db.example.json';
 
 const DB_FILE = path.join(process.cwd(), 'data', 'db.json');
 
@@ -111,10 +112,15 @@ export interface DatabaseSchema {
   calendarEvents: CalendarEvent[];
 }
 
+function getDatabaseTemplate(): DatabaseSchema {
+  return JSON.parse(JSON.stringify(databaseTemplate)) as DatabaseSchema;
+}
+
 export function getDatabase(): DatabaseSchema {
   try {
     if (!fs.existsSync(DB_FILE)) {
-      throw new Error(`Database file not found at ${DB_FILE}`);
+      console.warn(`Database file not found at ${DB_FILE}; using the sanitized sample database.`);
+      return getDatabaseTemplate();
     }
     const data = fs.readFileSync(DB_FILE, 'utf-8');
     const db = JSON.parse(data) as DatabaseSchema;
