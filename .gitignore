@@ -1,0 +1,8 @@
+.DS_Store
+.next/
+node_modules/
+.env*
+!.env.example
+data/db.json
+/cloudflared
+/cloudflared.tgz

@@ -1,0 +1,55 @@
+{
+  "settings": {
+    "companyName": "ห้างหุ้นส่วนจำกัด เมืองสองย่า ทรานสปอร์ต แอนด์ ทัวร์",
+    "companyNameEn": "Muang Song Ya Transport & Tour Limited Partnership",
+    "logoUrl": "/images/logo.png",
+    "location": "จังหวัดภูเก็ต (พร้อมให้บริการรับ-ส่ง และนำเที่ยวทั่วไทย)",
+    "address": "ถ.เทพกระษัตรี ต.เทพกระษัตรี อ.ถลาง จ.ภูเก็ต 83110",
+    "phones": [
+      {
+        "number": "096-463-8443",
+        "raw": "0964638443",
+        "label": "สายด่วน 1 (เจ้าของสายตรง)"
+      },
+      {
+        "number": "081-059-6350",
+        "raw": "0810596350",
+        "label": "สายด่วน 2 (ฝ่ายบริการลูกค้า / จองรถ)"
+      }
+    ],
+    "lineId": "@muangsongya",
+    "lineUrl": "https://line.me/ti/p/Q9W-e6nWz0",
+    "lineQrUrl": "/images/line-qr.jpg",
+    "facebookPageUrl": "https://facebook.com/muangsongyatour",
+    "facebookPageId": "muangsongyatour",
+    "primarySlogan": "อุ่นใจทุกเส้นทางทั่วไทย เจ้าของขับเอง ปลอดภัยระดับ VIP กับเมืองสองย่า ทรานสปอร์ต",
+    "alternativeSlogans": [
+      "มาตรฐานความปลอดภัยที่คุณวางใจ เจ้าของดูแลเองทุกกิโลเมตร ท่องเที่ยวทั่วไทยไปกับเมืองสองย่า",
+      "หรูหรา นั่งสบาย ปลอดภัยทุกโค้ง เพราะเจ้าของขับเอง — เมืองสองย่า ทรานสปอร์ต แอนด์ ทัวร์ ภูเก็ต"
+    ],
+    "selectedSlogan": "อุ่นใจทุกเส้นทางทั่วไทย เจ้าของขับเอง ปลอดภัยระดับ VIP กับเมืองสองย่า ทรานสปอร์ต",
+    "heroBadge": "บริการจากภูเก็ต วิ่งทัวร์ทั่วไทย • เจ้าของขับเองปลอดภัย 100%",
+    "heroSubtitle": "บริการเช่าเหมารถทัวร์ปรับอากาศ 2 ชั้น VIP (40-46 ที่นั่ง) เหมาคันสำหรับกรุ๊ปทัวร์ สัมมนา ศึกษาดูงาน และท่องเที่ยวทั่วประเทศ",
+    "supportedSeatModes": [
+      40,
+      44,
+      46
+    ],
+    "defaultSeatMode": 46,
+    "seo": {
+      "metaTitle": "เมืองสองย่า ทรานสปอร์ต แอนด์ ทัวร์ ภูเก็ต",
+      "metaDescription": "บริการเช่าเหมารถทัวร์ปรับอากาศ 2 ชั้น VIP เริ่มต้นจากภูเก็ต",
+      "metaKeywords": "เช่ารถทัวร์ภูเก็ต, เหมารถทัวร์ทั่วไทย",
+      "ogImageUrl": "/images/logo.png",
+      "facebookPixelId": "",
+      "facebookAppId": "",
+      "facebookPageId": "",
+      "facebookAccessToken": ""
+    }
+  },
+  "amenities": [],
+  "gallery": [],
+  "testimonials": [],
+  "inquiries": [],
+  "calendarEvents": []
+}

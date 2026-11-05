@@ -1,0 +1,101 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer base {
+  :root {
+    --font-prompt: 'Prompt', sans-serif;
+    --font-sarabun: 'Sarabun', sans-serif;
+    --font-sukhumvit: 'Sukhumvit Set', 'Sukhumvit Tadmai', 'Prompt', -apple-system, BlinkMacSystemFont, sans-serif;
+  }
+
+  html {
+    scroll-behavior: smooth;
+    font-family: 'Sukhumvit Set', 'Sukhumvit Tadmai', var(--font-prompt), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+  }
+
+  body {
+    font-family: 'Sukhumvit Set', 'Sukhumvit Tadmai', var(--font-prompt), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    color: #0F172A;
+    background-color: #F8FAFC;
+    overflow-x: hidden;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+  }
+
+  h1, h2, h3, h4, h5, h6, .font-heading {
+    font-family: 'Sukhumvit Set', 'Sukhumvit Tadmai', var(--font-prompt), -apple-system, BlinkMacSystemFont, sans-serif;
+    letter-spacing: -0.015em;
+  }
+}
+
+/* Clean Emerald & White Luxury Accents */
+.emerald-gradient-text {
+  background: linear-gradient(135deg, #064E3B 0%, #047857 50%, #059669 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.gold-gradient-text {
+  background: linear-gradient(135deg, #926A06 0%, #B8860B 50%, #D4AF37 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+}
+
+.emerald-gradient-btn {
+  background: linear-gradient(135deg, #047857 0%, #065F46 50%, #064E3B 100%);
+  color: #FFFFFF;
+  font-weight: 600;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 14px rgba(4, 120, 87, 0.25);
+}
+
+.emerald-gradient-btn:hover {
+  background: linear-gradient(135deg, #059669 0%, #047857 50%, #065F46 100%);
+  box-shadow: 0 6px 20px rgba(4, 120, 87, 0.35);
+  transform: translateY(-1px);
+}
+
+.gold-gradient-btn {
+  background: linear-gradient(135deg, #D4AF37 0%, #C59B27 50%, #B8860B 100%);
+  color: #064E3B;
+  font-weight: 700;
+  transition: all 0.25s ease;
+  box-shadow: 0 4px 14px rgba(212, 175, 55, 0.28);
+}
+
+.gold-gradient-btn:hover {
+  background: linear-gradient(135deg, #E5BE48 0%, #D4AF37 50%, #C59B27 100%);
+  box-shadow: 0 6px 20px rgba(212, 175, 55, 0.4);
+  transform: translateY(-1px);
+}
+
+/* Custom scrollbars */
+::-webkit-scrollbar {
+  width: 8px;
+  height: 8px;
+}
+::-webkit-scrollbar-track {
+  background: #F1F5F9;
+}
+::-webkit-scrollbar-thumb {
+  background: #047857;
+  border-radius: 4px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: #064E3B;
+}
+
+/* Subtle pulse */
+@keyframes pulseGlow {
+  0%, 100% {
+    box-shadow: 0 0 15px rgba(4, 120, 87, 0.25);
+  }
+  50% {
+    box-shadow: 0 0 25px rgba(4, 120, 87, 0.45);
+  }
+}
+
+.animate-pulse-glow {
+  animation: pulseGlow 2.5s infinite ease-in-out;
+}
