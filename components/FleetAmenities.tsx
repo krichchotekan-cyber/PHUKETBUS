@@ -14,6 +14,11 @@ import {
   Maximize2,
   X,
   Sparkles,
+  Wifi,
+  Music,
+  Coffee,
+  Compass,
+  Users,
 } from 'lucide-react';
 import { GalleryItem, Amenity } from '@/lib/db';
 
@@ -53,6 +58,18 @@ export default function FleetAmenities({ amenities, gallery }: FleetAmenitiesPro
         return <FileCheck className="w-6 h-6 text-emerald-700" />;
       case 'Wind':
         return <Wind className="w-6 h-6 text-emerald-700" />;
+      case 'Wifi':
+        return <Wifi className="w-6 h-6 text-emerald-700" />;
+      case 'Music':
+        return <Music className="w-6 h-6 text-emerald-700" />;
+      case 'Coffee':
+        return <Coffee className="w-6 h-6 text-emerald-700" />;
+      case 'Compass':
+        return <Compass className="w-6 h-6 text-emerald-700" />;
+      case 'Users':
+        return <Users className="w-6 h-6 text-emerald-700" />;
+      case 'Sparkles':
+        return <Sparkles className="w-6 h-6 text-amber-500" />;
       default:
         return <ShieldCheck className="w-6 h-6 text-emerald-700" />;
     }

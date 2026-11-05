@@ -15,6 +15,7 @@ import FaqSection from './FaqSection';
 import ContactAndQuoteForm from './ContactAndQuoteForm';
 import Footer from './Footer';
 import SpeedDialModal from './SpeedDialModal';
+import PromoPopupModal from './PromoPopupModal';
 import { DatabaseSchema } from '@/lib/db';
 
 interface OnePageSaleProps {
@@ -144,6 +145,14 @@ export default function OnePageSale({ initialData }: OnePageSaleProps) {
         isOpen={phoneModalOpen}
         onOpen={() => setPhoneModalOpen(true)}
         onClose={() => setPhoneModalOpen(false)}
+      />
+
+      {/* Promotional Poster Popup Modal for Day Visitors */}
+      <PromoPopupModal
+        onOpenPhoneModal={() => setPhoneModalOpen(true)}
+        phone1={settings.phones?.[0]?.number || '096-463-8443'}
+        phone2={settings.phones?.[1]?.number || '081-059-6350'}
+        lineUrl={settings.lineUrl}
       />
     </div>
   );
