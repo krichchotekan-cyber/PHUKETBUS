@@ -9,7 +9,6 @@ import BookingCalendarPicker from './BookingCalendarPicker';
 import BusSeatSimulator from './BusSeatSimulator';
 import FleetAmenities from './FleetAmenities';
 import PopularRoutes from './PopularRoutes';
-import FacebookFeedShowcase from './FacebookFeedShowcase';
 import Testimonials from './Testimonials';
 import FaqSection from './FaqSection';
 import ContactAndQuoteForm from './ContactAndQuoteForm';
@@ -105,9 +104,6 @@ export default function OnePageSale({ initialData }: OnePageSaleProps) {
 
         {/* Fleet & Amenities Showcase with Real Interior and Exterior Photos */}
         <FleetAmenities amenities={amenities || []} gallery={gallery || []} />
-
-        {/* Facebook Page Live Feed / Graph API showcase */}
-        <FacebookFeedShowcase facebookPageUrl={settings.facebookPageUrl} />
 
         {/* Customer Testimonials & Reviews */}
         <Testimonials testimonials={testimonials || []} />

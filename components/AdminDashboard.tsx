@@ -1581,7 +1581,7 @@ export default function AdminDashboard({ initialData }: AdminDashboardProps) {
                 />
               </div>
 
-              {/* Facebook Graph API, Pixel & CAPI Suite */}
+              {/* Facebook Pixel & Conversions API Suite */}
               <div className="p-5 sm:p-6 rounded-2xl bg-blue-950/30 border border-blue-500/40 space-y-6">
                 <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-blue-500/30 pb-4">
                   <div className="flex items-center gap-2.5">
@@ -1590,109 +1590,60 @@ export default function AdminDashboard({ initialData }: AdminDashboardProps) {
                     </div>
                     <div>
                       <h3 className="text-sm sm:text-base font-bold text-white flex items-center gap-2">
-                        <span>Facebook Integration (Graph API, Pixel & Conversions API)</span>
+                        <span>Facebook Pixel & Conversions API (CAPI)</span>
                         <span className="text-[10px] bg-blue-500/20 text-blue-300 px-2 py-0.5 rounded-full border border-blue-500/30">
-                          ซิงค์โพสต์ & แทร็ก Conversion
+                          Dual-Tracking พร้อมใช้งาน
                         </span>
                       </h3>
                       <p className="text-xs text-slate-400">
-                        ดึงโพสต์จากหน้า Facebook Fanpage มาแสดงบนเว็บ พร้อมระบบแทร็กผลลัพธ์ผ่าน Meta Pixel และ CAPI 2 ทาง
+                        ระบบติดตามผลโฆษณาและแทร็ก Conversion อัตโนมัติ 2 ทาง (ผ่าน Browser Pixel และ Server-side CAPI)
                       </p>
                     </div>
                   </div>
                 </div>
 
-                {/* Sub-card 1: Facebook Page & Feed Sync */}
+                {/* Facebook Fanpage URL */}
                 <div className="p-4 rounded-xl bg-slate-950/80 border border-blue-500/20 space-y-3">
-                  <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-2 text-xs font-bold text-blue-300">
-                      <ExternalLink className="w-4 h-4 text-blue-400" />
-                      <span>1. การเชื่อมต่อ Facebook Fanpage เพื่อดึงโพสต์ (Feed Showcase)</span>
-                    </div>
-                    <span className="text-[10px] text-slate-400">Graph API v19.0</span>
+                  <div className="flex items-center gap-2 text-xs font-bold text-blue-300">
+                    <ExternalLink className="w-4 h-4 text-blue-400" />
+                    <span>ลิงก์ Facebook Fanpage หลักของธุรกิจ</span>
                   </div>
 
-                  <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <div>
-                      <label className="block text-xs font-semibold text-slate-300 mb-1">
-                        Facebook Page ID / Username
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="เช่น muangsongyatour หรือตัวเลข 1000..."
-                        value={settings.seo?.facebookPageId || ''}
-                        onChange={(e) =>
-                          setSettings({
-                            ...settings,
-                            facebookPageId: e.target.value,
-                            seo: { ...settings.seo, facebookPageId: e.target.value },
-                          })
-                        }
-                        className="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs sm:text-sm focus:border-blue-400 focus:outline-none"
-                      />
-                      <p className="text-[11px] text-slate-400 mt-1">
-                        ชื่อหรือ ID ของเพจ เช่น <code>muangsongyatour</code> (หน้าเพจเมืองสองย่า ทรานสปอร์ต แอนด์ ทัวร์)
-                      </p>
-                    </div>
-
-                    <div>
-                      <label className="block text-xs font-semibold text-slate-300 mb-1">
-                        ลิงก์ Facebook Fanpage (URL)
-                      </label>
-                      <input
-                        type="text"
-                        placeholder="https://facebook.com/muangsongyatour"
-                        value={settings.facebookPageUrl || ''}
-                        onChange={(e) =>
-                          setSettings({
-                            ...settings,
-                            facebookPageUrl: e.target.value,
-                          })
-                        }
-                        className="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs sm:text-sm focus:border-blue-400 focus:outline-none"
-                      />
-                      <p className="text-[11px] text-slate-400 mt-1">
-                        ใช้สำหรับปุ่ม &quot;ดูโพสต์ทั้งหมดบน Facebook&quot; ของผู้เข้าชม
-                      </p>
-                    </div>
-                  </div>
-
-                  {fbFeedStatus && (
-                    <div className="p-3 rounded-xl bg-slate-900 border border-blue-500/50 text-xs font-semibold text-blue-200">
-                      {fbFeedStatus}
-                    </div>
-                  )}
-
-                  <div className="flex flex-wrap items-center gap-3 pt-1">
-                    <button
-                      type="button"
-                      onClick={handleTestFacebookFeed}
-                      disabled={fbFeedLoading}
-                      className="py-2 px-3.5 rounded-xl bg-blue-700 hover:bg-blue-600 text-white text-xs font-bold flex items-center gap-1.5 shadow transition active:scale-95 cursor-pointer disabled:opacity-50"
-                    >
-                      <RefreshCw className={`w-3.5 h-3.5 ${fbFeedLoading ? 'animate-spin' : ''}`} />
-                      <span>{fbFeedLoading ? 'กำลังทดสอบ...' : '⚡ ทดสอบดึงโพสต์จาก Facebook'}</span>
-                    </button>
-                    <span className="text-[11px] text-slate-400">
-                      * หากยังไม่ได้กรอก Access Token ระบบจะแสดงข้อมูลโพสต์ตัวอย่างทริปเสมือนจริงให้โดยอัตโนมัติ
-                    </span>
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-300 mb-1">
+                      ลิงก์ Facebook Fanpage (URL)
+                    </label>
+                    <input
+                      type="text"
+                      placeholder="https://www.facebook.com/muangsongya"
+                      value={settings.facebookPageUrl || ''}
+                      onChange={(e) =>
+                        setSettings({
+                          ...settings,
+                          facebookPageUrl: e.target.value,
+                        })
+                      }
+                      className="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs sm:text-sm focus:border-blue-400 focus:outline-none"
+                    />
+                    <p className="text-[11px] text-slate-400 mt-1">
+                      ใช้สำหรับปุ่มติดต่อ Facebook ในหน้าเว็บ, Footer และฟอร์มขอใบเสนอราคา
+                    </p>
                   </div>
                 </div>
 
-                {/* Sub-card 2: Facebook Pixel & Conversions API (CAPI) */}
+                {/* Facebook Pixel & CAPI Settings */}
                 <div className="p-4 rounded-xl bg-slate-950/80 border border-blue-500/20 space-y-3">
                   <div className="flex items-center justify-between">
                     <div className="flex items-center gap-2 text-xs font-bold text-blue-300">
                       <ShieldCheck className="w-4 h-4 text-blue-400" />
-                      <span>2. Facebook Pixel & Conversions API (CAPI Server-side Tracking)</span>
+                      <span>ตั้งค่าการแทร็ก Meta Pixel & Server-Side Conversions API (CAPI)</span>
                     </div>
-                    <span className="text-[10px] text-emerald-400 font-semibold">Dual-Tracking พร้อมใช้งาน</span>
                   </div>
 
                   <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                     <div>
                       <label className="block text-xs font-semibold text-slate-300 mb-1">
-                        Facebook Pixel ID
+                        Facebook Pixel ID / Dataset ID
                       </label>
                       <input
                         type="text"
@@ -1724,11 +1675,11 @@ export default function AdminDashboard({ initialData }: AdminDashboardProps) {
 
                   <div>
                     <label className="block text-xs font-semibold text-slate-300 mb-1">
-                      Facebook Access Token (System User Access Token / CAPI Token)
+                      Facebook Conversions API (CAPI) Access Token
                     </label>
                     <input
                       type="password"
-                      placeholder="EAAGm0PX4ZC... (ใช้สำหรับทั้งดึง Feed โพสต์ และส่ง Server-side Event)"
+                      placeholder="EAAGm0PX4ZC... (กรอกเพื่อส่ง Server-side Event อัตโนมัติเมื่อลูกค้าขอใบเสนอราคา)"
                       value={settings.seo?.facebookAccessToken || ''}
                       onChange={(e) =>
                         setSettings({
@@ -1739,7 +1690,7 @@ export default function AdminDashboard({ initialData }: AdminDashboardProps) {
                       className="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs sm:text-sm focus:border-blue-400 focus:outline-none font-mono"
                     />
                     <p className="text-[11px] text-slate-400 mt-1">
-                      สามารถสร้างได้จาก <em>Meta Events Manager &gt; การตั้งค่า &gt; Conversions API &gt; สร้างโทเค็นการเข้าถึง</em> หรือจาก <em>Meta Business Settings &gt; System Users</em>
+                      สร้างได้จาก <em>Meta Events Manager &gt; การตั้งค่า &gt; Conversions API &gt; สร้างโทเค็นการเข้าถึง</em>
                     </p>
                   </div>
 
