@@ -2,7 +2,13 @@ import fs from 'fs';
 import path from 'path';
 import databaseTemplate from '@/data/db.example.json';
 
-const DB_FILE = path.join(process.cwd(), 'data', 'db.json');
+const LOCAL_DB_FILE = path.join(process.cwd(), 'data', 'db.json');
+const TMP_DB_FILE = path.join('/tmp', 'phuketbus_db.json');
+
+declare global {
+  // eslint-disable-next-line no-var
+  var __PHUKETBUS_MEMORY_DB__: DatabaseSchema | undefined;
+}
 
 export interface PhoneContact {
   number: string;
@@ -125,27 +131,63 @@ function getDatabaseTemplate(): DatabaseSchema {
 
 export function getDatabase(): DatabaseSchema {
   try {
-    if (!fs.existsSync(DB_FILE)) {
-      console.warn(`Database file not found at ${DB_FILE}; using the sanitized sample database.`);
-      return getDatabaseTemplate();
+    // 1. Check in-memory cache
+    if (globalThis.__PHUKETBUS_MEMORY_DB__) {
+      return globalThis.__PHUKETBUS_MEMORY_DB__;
     }
-    const data = fs.readFileSync(DB_FILE, 'utf-8');
-    const db = JSON.parse(data) as DatabaseSchema;
-    if (!db.calendarEvents) {
-      db.calendarEvents = [];
+
+    // 2. Check /tmp file (Vercel serverless writable storage)
+    if (fs.existsSync(TMP_DB_FILE)) {
+      try {
+        const tmpData = fs.readFileSync(TMP_DB_FILE, 'utf-8');
+        const parsed = JSON.parse(tmpData) as DatabaseSchema;
+        if (!parsed.calendarEvents) parsed.calendarEvents = [];
+        globalThis.__PHUKETBUS_MEMORY_DB__ = parsed;
+        return parsed;
+      } catch {
+        // Fall back to local file
+      }
     }
-    return db;
+
+    // 3. Check local static db file
+    if (fs.existsSync(LOCAL_DB_FILE)) {
+      const data = fs.readFileSync(LOCAL_DB_FILE, 'utf-8');
+      const db = JSON.parse(data) as DatabaseSchema;
+      if (!db.calendarEvents) {
+        db.calendarEvents = [];
+      }
+      globalThis.__PHUKETBUS_MEMORY_DB__ = db;
+      return db;
+    }
+
+    // 4. Fallback to template
+    const template = getDatabaseTemplate();
+    globalThis.__PHUKETBUS_MEMORY_DB__ = template;
+    return template;
   } catch (error) {
     console.error('Error reading database:', error);
-    throw error;
+    const template = getDatabaseTemplate();
+    globalThis.__PHUKETBUS_MEMORY_DB__ = template;
+    return template;
   }
 }
 
 export function saveDatabase(data: DatabaseSchema): void {
+  // Update in-memory state
+  globalThis.__PHUKETBUS_MEMORY_DB__ = data;
+
+  // Attempt to write to /tmp (supported in AWS Lambda / Vercel Serverless)
   try {
-    fs.writeFileSync(DB_FILE, JSON.stringify(data, null, 2), 'utf-8');
-  } catch (error) {
-    console.error('Error saving database:', error);
-    throw error;
+    fs.writeFileSync(TMP_DB_FILE, JSON.stringify(data, null, 2), 'utf-8');
+  } catch (tmpErr) {
+    console.warn('Could not write database to /tmp:', tmpErr);
+  }
+
+  // Attempt to write to local directory (local development and persistent servers)
+  try {
+    fs.writeFileSync(LOCAL_DB_FILE, JSON.stringify(data, null, 2), 'utf-8');
+  } catch (fsErr: any) {
+    // On Vercel, root filesystem is read-only (EROFS), which is completely normal and expected
+    console.info('Local disk is read-only (e.g. Vercel), persistence stored in memory and /tmp:', fsErr?.message);
   }
 }

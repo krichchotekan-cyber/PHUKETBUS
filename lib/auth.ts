@@ -46,7 +46,7 @@ export function setAdminSession() {
   const cookieStore = cookies();
   cookieStore.set(ADMIN_TOKEN_KEY, `${nonce}.${signature}`, {
     httpOnly: true,
-    secure: process.env.NODE_ENV === 'production',
+    secure: process.env.VERCEL === '1',
     sameSite: 'lax',
     maxAge: 60 * 60 * 24 * 7, // 7 days
     path: '/',

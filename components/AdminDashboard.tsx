@@ -127,14 +127,22 @@ export default function AdminDashboard({ initialData }: AdminDashboardProps) {
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(payload),
       });
+
+      const data = await res.json().catch(() => ({}));
+
       if (res.ok) {
-        setSaveStatus('บันทึกข้อมูลเรียบร้อยแล้ว');
-        setTimeout(() => setSaveStatus(''), 3000);
+        setSaveStatus('✅ บันทึกข้อมูลเรียบร้อยแล้ว');
+        setTimeout(() => setSaveStatus(''), 4000);
       } else {
-        setSaveStatus('เกิดข้อผิดพลาดในการบันทึก');
+        if (res.status === 401) {
+          setSaveStatus('⚠️ เซสชันหมดอายุ กรุณาเข้าสู่ระบบใหม่');
+          setTimeout(() => router.push('/admin/login'), 2000);
+        } else {
+          setSaveStatus(`❌ เกิดข้อผิดพลาด: ${data.error || 'บันทึกข้อมูลไม่สำเร็จ'}`);
+        }
       }
-    } catch {
-      setSaveStatus('เกิดข้อผิดพลาดในการเชื่อมต่อ');
+    } catch (err: any) {
+      setSaveStatus(`❌ เกิดข้อผิดพลาดในการเชื่อมต่อ: ${err.message}`);
     }
   };
 
@@ -1763,6 +1771,13 @@ export default function AdminDashboard({ initialData }: AdminDashboardProps) {
                     </ul>
                   </div>
                 </div>
+
+                {saveStatus && (
+                  <div className="p-3 rounded-xl bg-slate-900 border border-emerald-500/60 text-xs font-semibold text-emerald-300 flex items-center gap-2">
+                    <CheckCircle className="w-4 h-4 text-emerald-400 shrink-0" />
+                    <span>{saveStatus}</span>
+                  </div>
+                )}
 
                 <div className="flex flex-wrap items-center justify-between gap-3 pt-2 border-t border-blue-500/20">
                   <div className="text-xs text-blue-300 flex items-center gap-1.5">
