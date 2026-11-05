@@ -12,6 +12,18 @@ interface NavbarProps {
 export default function Navbar({ onOpenPhoneModal, companyName }: NavbarProps) {
   const [isScrolled, setIsScrolled] = useState(false);
   const [mobileMenuOpen, setMobileMenuOpen] = useState(false);
+  const [activeSection, setActiveSection] = useState<string>('');
+
+  // Reordered navigation links strictly matching page scroll order
+  const navLinks = [
+    { name: 'จุดเด่นบริการ', href: '#why-choose-us', id: 'why-choose-us' },
+    { name: 'ปฏิทินจองวัน', href: '#calendar-section', id: 'calendar-section' },
+    { name: 'ผังที่นั่ง VIP', href: '#seat-layout', id: 'seat-layout' },
+    { name: 'เส้นทางยอดนิยม', href: '#routes', id: 'routes' },
+    { name: 'ภาพรถจริง', href: '#amenities', id: 'amenities' },
+    { name: 'รีวิวลูกค้า', href: '#testimonials', id: 'testimonials' },
+    { name: 'ขอใบเสนอราคา', href: '#quote-section', id: 'quote-section' },
+  ];
 
   useEffect(() => {
     const handleScroll = () => {
@@ -20,21 +32,22 @@ export default function Navbar({ onOpenPhoneModal, companyName }: NavbarProps) {
       } else {
         setIsScrolled(false);
       }
+
+      // Scroll Spy: identify which section is currently active
+      const scrollPos = window.scrollY + 120;
+      for (let i = navLinks.length - 1; i >= 0; i--) {
+        const el = document.getElementById(navLinks[i].id);
+        if (el && el.offsetTop <= scrollPos) {
+          setActiveSection(navLinks[i].id);
+          break;
+        }
+      }
     };
+
     window.addEventListener('scroll', handleScroll, { passive: true });
     handleScroll();
     return () => window.removeEventListener('scroll', handleScroll);
   }, []);
-
-  // Concise, single-line desktop navigation links
-  const navLinks = [
-    { name: 'จุดเด่นบริการ', href: '#why-choose-us' },
-    { name: 'ผังที่นั่ง VIP', href: '#seat-layout' },
-    { name: 'ปฏิทินจองวัน', href: '#calendar-section' },
-    { name: 'เส้นทางยอดนิยม', href: '#routes' },
-    { name: 'รีวิวลูกค้า', href: '#testimonials' },
-    { name: 'ขอใบเสนอราคา', href: '#quote-section' },
-  ];
 
   return (
     <header
@@ -69,15 +82,22 @@ export default function Navbar({ onOpenPhoneModal, companyName }: NavbarProps) {
 
           {/* Desktop Nav Links (Guaranteed Strict Single Line, No Linebreaks) */}
           <nav className="hidden lg:flex items-center gap-2.5 xl:gap-5 text-xs xl:text-[13px] font-medium whitespace-nowrap shrink">
-            {navLinks.map((link) => (
-              <a
-                key={link.name}
-                href={link.href}
-                className="text-slate-100 hover:text-amber-300 transition-colors relative py-1 whitespace-nowrap shrink-0 hover:after:w-full after:w-0 after:h-0.5 after:bg-amber-300 after:absolute after:bottom-0 after:left-0 after:transition-all"
-              >
-                {link.name}
-              </a>
-            ))}
+            {navLinks.map((link) => {
+              const isActive = activeSection === link.id;
+              return (
+                <a
+                  key={link.name}
+                  href={link.href}
+                  className={`transition-all relative py-1 whitespace-nowrap shrink-0 ${
+                    isActive
+                      ? 'text-amber-300 font-bold after:w-full after:h-0.5 after:bg-amber-300 after:absolute after:bottom-0 after:left-0'
+                      : 'text-slate-100 hover:text-amber-300 hover:after:w-full after:w-0 after:h-0.5 after:bg-amber-300 after:absolute after:bottom-0 after:left-0 after:transition-all'
+                  }`}
+                >
+                  {link.name}
+                </a>
+              );
+            })}
           </nav>
 
           {/* Right Action Buttons */}
@@ -152,16 +172,23 @@ export default function Navbar({ onOpenPhoneModal, companyName }: NavbarProps) {
           </div>
 
           <div className="space-y-1">
-            {navLinks.map((link) => (
-              <a
-                key={link.name}
-                href={link.href}
-                onClick={() => setMobileMenuOpen(false)}
-                className="block py-2 px-3 rounded-xl text-sm text-slate-200 hover:text-amber-300 hover:bg-emerald-900/60 font-medium transition"
-              >
-                {link.name}
-              </a>
-            ))}
+            {navLinks.map((link) => {
+              const isActive = activeSection === link.id;
+              return (
+                <a
+                  key={link.name}
+                  href={link.href}
+                  onClick={() => setMobileMenuOpen(false)}
+                  className={`block py-2.5 px-3 rounded-xl text-sm font-medium transition ${
+                    isActive
+                      ? 'text-amber-300 bg-emerald-900/80 font-bold border-l-4 border-amber-300'
+                      : 'text-slate-200 hover:text-amber-300 hover:bg-emerald-900/60'
+                  }`}
+                >
+                  {link.name}
+                </a>
+              );
+            })}
           </div>
 
           <div className="pt-3 border-t border-emerald-800/60 flex flex-col gap-2.5">
