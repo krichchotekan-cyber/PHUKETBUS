@@ -20,8 +20,8 @@
     "lineId": "@muangsongya",
     "lineUrl": "https://line.me/ti/p/Q9W-e6nWz0",
     "lineQrUrl": "/images/line-qr.jpg",
-    "facebookPageUrl": "https://facebook.com/muangsongyatour",
-    "facebookPageId": "muangsongyatour",
+    "facebookPageUrl": "https://www.facebook.com/muangsongya",
+    "facebookPageId": "1390546477478662",
     "primarySlogan": "อุ่นใจทุกเส้นทางทั่วไทย ปลอดภัยระดับ VIP เจ้าของขับเอง ทริปไหน...ก็ไปได้",
     "alternativeSlogans": [
       "มาตรฐานความปลอดภัยที่คุณวางใจ เจ้าของดูแลเองทุกกิโลเมตร ท่องเที่ยวทั่วไทยไปกับเมืองสองย่า",
@@ -42,9 +42,9 @@
       "metaKeywords": "เช่ารถทัวร์ภูเก็ต, เหมารถทัวร์ทั่วไทย, รถทัวร์ 2 ชั้น VIP, เมืองสองย่า ทรานสปอร์ต แอนด์ ทัวร์, รถบัสเช่าเหมาภูเก็ต, รถทัวร์ 40 ที่นั่ง, รถทัวร์ 46 ที่นั่ง, รถทัวร์เจ้าของขับเอง",
       "ogImageUrl": "/images/logo.png",
       "facebookPixelId": "FB-PIXEL-MSY-8443",
-      "facebookAppId": "YOUR_FACEBOOK_APP_ID",
-      "facebookPageId": "YOUR_FACEBOOK_PAGE_ID",
-      "facebookAccessToken": ""
+      "facebookAppId": "",
+      "facebookPageId": "1390546477478662",
+      "facebookAccessToken": "EAAQioJZBAzsoBSwZBs2ZBCIdPbcy5A7v6ay7jC0F7UguPMKCrYP9Q1ZBRvV7QKcKI4sjxoGkeyiid0cpqwDThbibJSn2DXDTpzzhxKDcCcVgB0FSKc4PnC6MLFthbSVXWugJRM89GfgobDZCrPKYdY265IpZAysZATk24QU7Sj9r90KWXAv5G0ufn6aZAIeHjXuTdQZDZD"
     },
     "telegram": {
       "botToken": "9260423736:AAHxrewFut_-_39ehaR3I8wwmDms9PJsXw0",
