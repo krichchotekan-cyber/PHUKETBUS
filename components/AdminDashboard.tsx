@@ -31,6 +31,9 @@ import {
   ChevronRight,
   AlertCircle,
   Wrench,
+  Send,
+  Bell,
+  MessageSquare,
 } from 'lucide-react';
 import {
   DatabaseSchema,
@@ -121,6 +124,68 @@ export default function AdminDashboard({ initialData }: AdminDashboardProps) {
       }
     } catch {
       setSaveStatus('เกิดข้อผิดพลาดในการเชื่อมต่อ');
+    }
+  };
+
+  const [telegramStatus, setTelegramStatus] = useState<string>('');
+  const [telegramLoading, setTelegramLoading] = useState<boolean>(false);
+
+  const handleDetectTelegram = async () => {
+    setTelegramLoading(true);
+    setTelegramStatus('กำลังตรวจสอบข้อความจาก Telegram...');
+    try {
+      const res = await fetch('/api/telegram', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'detect',
+          botToken: settings.telegram?.botToken || '9260423736:AAHxrewFut_-_39ehaR3I8wwmDms9PJsXw0',
+        }),
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setSettings((prev) => ({
+          ...prev,
+          telegram: {
+            botToken: prev.telegram?.botToken || '9260423736:AAHxrewFut_-_39ehaR3I8wwmDms9PJsXw0',
+            chatId: data.chatId,
+            enabled: true,
+          },
+        }));
+        setTelegramStatus(`✅ ตรวจพบและบันทึก Chat ID: ${data.chatId} เรียบร้อยแล้ว!`);
+      } else {
+        setTelegramStatus(`⚠️ ${data.error || 'ไม่พบข้อความ กรุณากด Start ที่ @Phuketbusbot ก่อน'}`);
+      }
+    } catch (e: any) {
+      setTelegramStatus(`❌ เกิดข้อผิดพลาด: ${e.message}`);
+    } finally {
+      setTelegramLoading(false);
+    }
+  };
+
+  const handleTestTelegram = async () => {
+    setTelegramLoading(true);
+    setTelegramStatus('กำลังส่งข้อความทดสอบไปยัง Telegram...');
+    try {
+      const res = await fetch('/api/telegram', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({
+          action: 'test',
+          botToken: settings.telegram?.botToken || '9260423736:AAHxrewFut_-_39ehaR3I8wwmDms9PJsXw0',
+          chatId: settings.telegram?.chatId,
+        }),
+      });
+      const data = await res.json();
+      if (res.ok && data.success) {
+        setTelegramStatus('✅ ส่งข้อความทดสอบสำเร็จ! ตรวจสอบใน Telegram ได้ทันที');
+      } else {
+        setTelegramStatus(`⚠️ ${data.error || 'ไม่สามารถส่งข้อความได้'}`);
+      }
+    } catch (e: any) {
+      setTelegramStatus(`❌ เกิดข้อผิดพลาด: ${e.message}`);
+    } finally {
+      setTelegramLoading(false);
     }
   };
 
@@ -1500,6 +1565,159 @@ export default function AdminDashboard({ initialData }: AdminDashboardProps) {
                     <li><code>Lead</code>: เมื่อผู้ชมกดส่งฟอร์มขอใบเสนอราคาเช่าเหมาคัน</li>
                     <li><code>ViewContent</code>: เมื่อผู้ชมคลิกดูผังที่นั่งจำลองเหมาคัน</li>
                   </ul>
+                </div>
+              </div>
+
+              {/* Telegram Bot Notification Settings */}
+              <div className="p-5 rounded-2xl bg-slate-950 border border-sky-500/40 space-y-4">
+                <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-3">
+                  <div className="flex items-center gap-2.5">
+                    <div className="w-9 h-9 rounded-xl bg-sky-500/20 text-sky-400 flex items-center justify-center font-bold">
+                      <Send className="w-5 h-5" />
+                    </div>
+                    <div>
+                      <h3 className="text-sm font-bold text-white flex items-center gap-2">
+                        <span>Telegram Bot Notification (@Phuketbusbot)</span>
+                        <span className="text-[10px] bg-sky-500/20 text-sky-300 px-2 py-0.5 rounded-full border border-sky-500/30">
+                          ส่งแจ้งเตือนจองรถทันที
+                        </span>
+                      </h3>
+                      <p className="text-xs text-slate-400">
+                        แจ้งเตือนเข้าแอป Telegram ทุกครั้งที่มีลูกค้าส่งฟอร์มขอใบเสนอราคาใหม่
+                      </p>
+                    </div>
+                  </div>
+
+                  <label className="flex items-center gap-2 cursor-pointer self-start sm:self-auto">
+                    <input
+                      type="checkbox"
+                      checked={settings.telegram?.enabled !== false}
+                      onChange={(e) =>
+                        setSettings({
+                          ...settings,
+                          telegram: {
+                            botToken: settings.telegram?.botToken || '9260423736:AAHxrewFut_-_39ehaR3I8wwmDms9PJsXw0',
+                            chatId: settings.telegram?.chatId || '',
+                            enabled: e.target.checked,
+                          },
+                        })
+                      }
+                      className="w-4 h-4 rounded text-sky-500 accent-sky-500 cursor-pointer"
+                    />
+                    <span className="text-xs font-semibold text-slate-300">เปิดใช้งานแจ้งเตือน</span>
+                  </label>
+                </div>
+
+                {telegramStatus && (
+                  <div className="p-3 rounded-xl bg-slate-900 border border-sky-500/50 text-xs font-semibold text-sky-200">
+                    {telegramStatus}
+                  </div>
+                )}
+
+                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                  <div>
+                    <label className="block text-xs font-semibold text-slate-300 mb-1">
+                      Telegram Bot Token
+                    </label>
+                    <input
+                      type="text"
+                      value={settings.telegram?.botToken || '9260423736:AAHxrewFut_-_39ehaR3I8wwmDms9PJsXw0'}
+                      onChange={(e) =>
+                        setSettings({
+                          ...settings,
+                          telegram: {
+                            botToken: e.target.value,
+                            chatId: settings.telegram?.chatId || '',
+                            enabled: settings.telegram?.enabled !== false,
+                          },
+                        })
+                      }
+                      className="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs sm:text-sm focus:border-sky-400 focus:outline-none font-mono"
+                    />
+                  </div>
+
+                  <div>
+                    <div className="flex items-center justify-between mb-1">
+                      <label className="block text-xs font-semibold text-slate-300">
+                        Chat ID (ห้องแชท หรือ กลุ่ม)
+                      </label>
+                      <button
+                        type="button"
+                        onClick={handleDetectTelegram}
+                        disabled={telegramLoading}
+                        className="text-[11px] text-sky-400 hover:text-sky-300 underline font-semibold cursor-pointer disabled:opacity-50"
+                      >
+                        {telegramLoading ? 'กำลังตรวจสอบ...' : '⚡ ตรวจจับ Chat ID อัตโนมัติ'}
+                      </button>
+                    </div>
+                    <input
+                      type="text"
+                      placeholder="เช่น 123456789 หรือกดตรวจจับอัตโนมัติด้านบน"
+                      value={settings.telegram?.chatId || ''}
+                      onChange={(e) =>
+                        setSettings({
+                          ...settings,
+                          telegram: {
+                            botToken: settings.telegram?.botToken || '9260423736:AAHxrewFut_-_39ehaR3I8wwmDms9PJsXw0',
+                            chatId: e.target.value,
+                            enabled: settings.telegram?.enabled !== false,
+                          },
+                        })
+                      }
+                      className="w-full px-3.5 py-2 rounded-xl bg-slate-900 border border-slate-700 text-white text-xs sm:text-sm focus:border-sky-400 focus:outline-none font-mono"
+                    />
+                  </div>
+                </div>
+
+                {/* Step by step guide */}
+                <div className="p-3.5 rounded-xl bg-sky-950/40 border border-sky-800/40 text-xs text-slate-300 space-y-1.5 leading-relaxed">
+                  <div className="font-bold text-sky-300 flex items-center gap-1.5">
+                    <Bell className="w-3.5 h-3.5 text-sky-400" />
+                    <span>วิธีเชื่อมต่อ Telegram Bot รับแจ้งเตือนใน 1 นาที:</span>
+                  </div>
+                  <ol className="list-decimal pl-5 space-y-1 text-slate-300 text-[11px]">
+                    <li>
+                      เปิดแอป Telegram แล้วค้นหา <strong>@Phuketbusbot</strong> หรือคลิกลิงก์{' '}
+                      <a
+                        href="https://t.me/Phuketbusbot"
+                        target="_blank"
+                        rel="noopener noreferrer"
+                        className="text-sky-400 font-bold underline"
+                      >
+                        t.me/Phuketbusbot
+                      </a>
+                    </li>
+                    <li>
+                      กดปุ่ม <strong>Start</strong> หรือพิมพ์ข้อความอะไรก็ได้ เช่น "สวัสดี" ส่งเข้าไปในบอท 1 ข้อความ
+                    </li>
+                    <li>
+                      กลับมากดปุ่ม <strong>"⚡ ตรวจจับ Chat ID อัตโนมัติ"</strong> ด้านบนนี้ ระบบจะตรวจจับและบันทึก Chat ID ให้เองทันที!
+                    </li>
+                    <li>
+                      กดปุ่ม <strong>"ส่งข้อความทดสอบ"</strong> ด้านล่างเพื่อยืนยันว่าได้รับแจ้งเตือนในมือถือ
+                    </li>
+                  </ol>
+                </div>
+
+                <div className="flex flex-wrap items-center gap-3 pt-1">
+                  <button
+                    type="button"
+                    onClick={handleTestTelegram}
+                    disabled={telegramLoading}
+                    className="py-2.5 px-4 rounded-xl bg-sky-600 hover:bg-sky-500 text-white text-xs font-bold flex items-center gap-2 shadow transition active:scale-95 cursor-pointer disabled:opacity-50"
+                  >
+                    <Send className="w-3.5 h-3.5" />
+                    <span>{telegramLoading ? 'กำลังส่ง...' : 'ส่งข้อความทดสอบไปยัง Telegram'}</span>
+                  </button>
+
+                  <button
+                    type="button"
+                    onClick={handleSaveSettings}
+                    className="py-2.5 px-4 rounded-xl bg-emerald-800 hover:bg-emerald-700 text-white text-xs font-bold flex items-center gap-1.5 shadow transition cursor-pointer"
+                  >
+                    <Save className="w-3.5 h-3.5" />
+                    <span>บันทึกการตั้งค่า Telegram</span>
+                  </button>
                 </div>
               </div>
             </div>

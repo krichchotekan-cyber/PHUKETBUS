@@ -2,6 +2,7 @@ import { NextResponse } from 'next/server';
 import { getDatabase, saveDatabase, Inquiry } from '@/lib/db';
 import { isAuthenticated } from '@/lib/auth';
 import { sendFacebookCapiEvent } from '@/lib/facebook';
+import { sendTelegramBookingNotification } from '@/lib/telegram';
 
 export async function GET() {
   try {
@@ -83,6 +84,13 @@ export async function POST(request: Request) {
           },
         }
       );
+    }
+
+    // Send Telegram Notification to the bot
+    try {
+      await sendTelegramBookingNotification(newInquiry, body.freeServices);
+    } catch (telegramErr) {
+      console.error('Error sending Telegram notification:', telegramErr);
     }
 
     return NextResponse.json({

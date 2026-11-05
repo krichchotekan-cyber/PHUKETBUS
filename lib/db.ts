@@ -21,6 +21,12 @@ export interface SeoSettings {
   facebookAccessToken: string;
 }
 
+export interface TelegramSettings {
+  botToken: string;
+  chatId: string;
+  enabled: boolean;
+}
+
 export interface SiteSettings {
   companyName: string;
   companyNameEn: string;
@@ -41,6 +47,7 @@ export interface SiteSettings {
   supportedSeatModes: number[];
   defaultSeatMode: number;
   seo: SeoSettings;
+  telegram?: TelegramSettings;
 }
 
 export interface Amenity {

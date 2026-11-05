@@ -45,6 +45,11 @@
       "facebookAppId": "YOUR_FACEBOOK_APP_ID",
       "facebookPageId": "YOUR_FACEBOOK_PAGE_ID",
       "facebookAccessToken": ""
+    },
+    "telegram": {
+      "botToken": "9260423736:AAHxrewFut_-_39ehaR3I8wwmDms9PJsXw0",
+      "chatId": "",
+      "enabled": true
     }
   },
   "amenities": [
