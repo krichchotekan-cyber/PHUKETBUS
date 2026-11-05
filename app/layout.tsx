@@ -95,7 +95,7 @@ export default function RootLayout({
     db = null;
   }
 
-  const pixelId = db?.settings?.seo?.facebookPixelId || 'FB-PIXEL-MSY-8443';
+  const pixelId = db?.settings?.seo?.facebookPixelId;
 
   // JSON-LD Schema Markup for TravelAgency & LocalBusiness
   const schemaMarkup = {
