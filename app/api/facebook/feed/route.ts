@@ -45,9 +45,13 @@ export async function GET(request: Request) {
         const data = await res.json();
 
         if (!res.ok) {
+          let customMsg = data?.error?.message || 'เชื่อมต่อ Facebook Graph API ล้มเหลว';
+          if (data?.error?.code === 100 || customMsg.includes('pages_read_engagement') || customMsg.includes('Object does not exist')) {
+            customMsg = '💡 โทเค็นนี้คือ Conversions API Token (สำหรับแทร็กโฆษณา/ยอดจอง) ซึ่งใช้งานกับระบบ CAPI ได้ถูกต้องแล้ว แต่ยังไม่มีสิทธิ์ "pages_read_engagement" สำหรับดึงโพสต์หน้าเพจ (หน้าเว็บจะแสดงโพสต์ทริปรถทัวร์แบบ Curated Showcase พร้อมปุ่มลิงก์ตรงไปยังเพจจริง https://www.facebook.com/muangsongya ให้อัตโนมัติ)';
+          }
           return NextResponse.json({
             success: false,
-            error: data?.error?.message || 'เชื่อมต่อ Facebook Graph API ล้มเหลว',
+            error: customMsg,
             fbError: data?.error,
           });
         }
