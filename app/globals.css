@@ -6,26 +6,29 @@
   :root {
     --font-prompt: 'Prompt', sans-serif;
     --font-sarabun: 'Sarabun', sans-serif;
-    --font-sukhumvit: 'Sukhumvit Set', 'Sukhumvit Tadmai', 'Prompt', -apple-system, BlinkMacSystemFont, sans-serif;
   }
 
   html {
     scroll-behavior: smooth;
-    font-family: 'Sukhumvit Set', 'Sukhumvit Tadmai', var(--font-prompt), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: var(--font-sarabun), var(--font-prompt), -apple-system, BlinkMacSystemFont, sans-serif;
+    letter-spacing: normal;
   }
 
   body {
-    font-family: 'Sukhumvit Set', 'Sukhumvit Tadmai', var(--font-prompt), -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+    font-family: var(--font-sarabun), var(--font-prompt), -apple-system, BlinkMacSystemFont, sans-serif;
     color: #0F172A;
     background-color: #F8FAFC;
     overflow-x: hidden;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+    letter-spacing: normal;
+    line-height: 1.6;
   }
 
   h1, h2, h3, h4, h5, h6, .font-heading {
-    font-family: 'Sukhumvit Set', 'Sukhumvit Tadmai', var(--font-prompt), -apple-system, BlinkMacSystemFont, sans-serif;
-    letter-spacing: -0.015em;
+    font-family: var(--font-prompt), -apple-system, BlinkMacSystemFont, sans-serif;
+    letter-spacing: normal;
+    line-height: 1.25;
   }
 }
 

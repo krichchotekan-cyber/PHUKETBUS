@@ -29,8 +29,8 @@ module.exports = {
         },
       },
       fontFamily: {
-        heading: ["'Sukhumvit Set'", "'Sukhumvit Tadmai'", 'var(--font-prompt)', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
-        body: ["'Sukhumvit Set'", "'Sukhumvit Tadmai'", 'var(--font-sarabun)', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        heading: ['var(--font-prompt)', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
+        body: ['var(--font-sarabun)', 'var(--font-prompt)', '-apple-system', 'BlinkMacSystemFont', 'sans-serif'],
       },
       boxShadow: {
         'clean': '0 4px 20px -2px rgba(6, 78, 59, 0.06), 0 2px 6px -1px rgba(6, 78, 59, 0.04)',
