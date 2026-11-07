@@ -59,7 +59,7 @@ export default function BusSeatSimulator({
             <span>ผังที่นั่งประจำรถสำหรับการเช่าเหมาคัน (Whole Coach Charter Layout)</span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-extrabold font-heading text-emerald-950 tracking-tight">
-            ผังที่นั่งรถทัวร์ 2 ชั้น VIP <span className="emerald-gradient-text">40 – 46 ที่นั่ง</span>
+            ผังที่นั่งรถทัวร์ 2 ชั้น VIP <span className="emerald-gradient-text block sm:inline mt-1 sm:mt-0">40 – 46 ที่นั่ง</span>
           </h2>
           <p className="text-slate-600 text-sm sm:text-base mt-3 leading-relaxed">
             แสดงโครงสร้างผังที่นั่งจริงของรถแต่ละรุ่น สำหรับหัวหน้าทัวร์และผู้จัดงานใช้ตรวจดูสัดส่วนและจัดสรรที่นั่งให้สมาชิกในคณะ
@@ -83,36 +83,30 @@ export default function BusSeatSimulator({
 
         {/* Controls: Deck Switcher & Capacity Selector */}
         <div className="flex flex-col md:flex-row items-center justify-between gap-4 p-4 rounded-2xl bg-white border border-emerald-100 mb-8 shadow-sm">
-          {/* Deck Switcher Tabs */}
-          <div className="flex items-center bg-slate-100 p-1.5 rounded-xl border border-slate-200 w-full md:w-auto">
+          {/* Deck Switcher Tabs - Single line without wrapping */}
+          <div className="flex items-center overflow-x-auto no-scrollbar max-w-full bg-slate-100 p-1.5 rounded-xl border border-slate-200 w-full md:w-auto">
             <button
               onClick={() => setActiveDeck(2)}
-              className={`flex-1 md:flex-initial flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+              className={`flex-1 md:flex-initial flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-xs sm:text-sm font-bold transition-all cursor-pointer whitespace-nowrap shrink-0 ${
                 activeDeck === 2
                   ? 'bg-emerald-800 text-white shadow-sm'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              <Layers className="w-4 h-4 text-emerald-200" />
-              <span>ชั้น 2 (Upper Deck - โซนที่นั่ง VIP)</span>
-              <span className="text-[11px] px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-200">
-                {upperSeatsCount} ที่นั่ง
-              </span>
+              <Layers className="w-3.5 h-3.5 text-emerald-300 shrink-0" />
+              <span>ชั้น 2 (Upper Deck - โซนที่นั่ง VIP {upperSeatsCount} ที่นั่ง)</span>
             </button>
 
             <button
               onClick={() => setActiveDeck(1)}
-              className={`flex-1 md:flex-initial flex items-center justify-center gap-2 px-5 py-2.5 rounded-lg text-xs sm:text-sm font-bold transition-all cursor-pointer ${
+              className={`flex-1 md:flex-initial flex items-center justify-center gap-2 px-4 py-2.5 rounded-lg text-xs sm:text-sm font-bold transition-all cursor-pointer whitespace-nowrap shrink-0 ${
                 activeDeck === 1
                   ? 'bg-emerald-800 text-white shadow-sm'
                   : 'text-slate-600 hover:text-slate-900'
               }`}
             >
-              <Layers className="w-4 h-4 text-emerald-200" />
-              <span>ชั้น 1 (Lower Deck - โซนรับรอง & ห้องน้ำ)</span>
-              <span className="text-[11px] px-2 py-0.5 rounded-full bg-emerald-950 text-emerald-200">
-                {lowerSeatsCount} ที่นั่ง
-              </span>
+              <Layers className="w-3.5 h-3.5 text-emerald-300 shrink-0" />
+              <span>ชั้น 1 (Lower Deck - โซนรับรอง &amp; ห้องน้ำ {lowerSeatsCount} ที่นั่ง)</span>
             </button>
           </div>
 

@@ -137,7 +137,7 @@ export default function ContactAndQuoteForm({
               </div>
               <h2 className="text-3xl sm:text-4xl font-extrabold font-heading text-emerald-950 tracking-tight leading-tight">
                 ขอใบเสนอราคาเช่าเหมาคัน & <br />
-                <span className="emerald-gradient-text">ติดต่อเมืองสองย่า ทรานสปอร์ต</span>
+                <span className="emerald-gradient-text block sm:inline mt-1 sm:mt-0">ติดต่อเมืองสองย่า ทรานสปอร์ต</span>
               </h2>
               <p className="text-slate-600 text-sm sm:text-base mt-4 leading-relaxed">
                 กรุณาระบุรายละเอียดเส้นทางและช่วงเวลาเดินทาง ทางเรายินดีคำนวณราคาเช่าเหมาคันที่คุ้มค่าที่สุด พร้อมช่วยจัดโปรแกรมทัวร์และติดต่อโรงแรมให้ฟรีครบวงจรครับ

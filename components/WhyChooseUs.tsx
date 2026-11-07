@@ -65,7 +65,7 @@ export default function WhyChooseUs() {
             <span>มาตรฐานความปลอดภัยสูงสุดที่คุณวางใจได้</span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-extrabold font-heading text-emerald-950 tracking-tight">
-            ทำไมลูกค้าถึงเลือก <span className="emerald-gradient-text">เมืองสองย่า ทรานสปอร์ต</span>
+            ทำไมลูกค้าถึงเลือก <span className="emerald-gradient-text block sm:inline mt-1 sm:mt-0">เมืองสองย่า ทรานสปอร์ต</span>
           </h2>
           <p className="text-slate-600 text-sm sm:text-base mt-4 leading-relaxed">
             เรามุ่งมั่นให้บริการเช่าเหมารถทัวร์ระดับ VIP ด้วยความจริงใจ รถสวย สะอาด คนขับสุภาพ 

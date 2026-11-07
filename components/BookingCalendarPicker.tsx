@@ -149,7 +149,7 @@ export default function BookingCalendarPicker({
             <span>ปฏิทินตรวจเช็คคิวรถว่าง & จองวันเดินทาง</span>
           </div>
           <h3 className="text-xl sm:text-2xl font-bold font-heading text-emerald-950">
-            เลือกช่วงวันเดินทางของคุณ (เช่น 1 - 3 วัน)
+            เลือกช่วงวันเดินทางของคุณ
           </h3>
           <p className="text-xs text-slate-500 mt-1">
             คลิกเลือกวันเริ่มต้นและวันเดินทางกลับ เพื่อล็อคคิวรถทัวร์ VIP เหมาคัน

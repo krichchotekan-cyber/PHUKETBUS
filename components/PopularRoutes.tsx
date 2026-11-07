@@ -148,7 +148,7 @@ export default function PopularRoutes() {
             <span>เส้นทางยอดนิยม & บริการที่ลูกค้าเลือกใช้มากที่สุด</span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-extrabold font-heading text-emerald-950 tracking-tight">
-            บริการรถทัวร์ VIP <span className="emerald-gradient-text">จากภูเก็ต วิ่งทั่วไทย</span>
+            บริการรถทัวร์ VIP <span className="emerald-gradient-text block sm:inline mt-1 sm:mt-0">จากภูเก็ต วิ่งทั่วไทย</span>
           </h2>
           <p className="text-slate-600 text-sm sm:text-base mt-3 leading-relaxed">
             ไม่ว่าปลายทางจะใกล้หรือไกล เหนือ ใต้ ออก ตก เราพร้อมพาคณะของคุณไปถึงจุดหมายด้วยความปลอดภัยและความสุขสูงสุด

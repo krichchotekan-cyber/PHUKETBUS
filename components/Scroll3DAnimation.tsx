@@ -116,7 +116,7 @@ export default function Scroll3DAnimation() {
             <span>3D Interactive Showcase • สัมผัสรถจริงรอบคัน</span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-extrabold font-heading text-emerald-950 tracking-tight">
-            รถทัวร์ 2 ชั้น VIP <span className="emerald-gradient-text">เมืองสองย่า ทรานสปอร์ต</span>
+            รถทัวร์ 2 ชั้น VIP <span className="emerald-gradient-text block sm:inline mt-1 sm:mt-0">เมืองสองย่า ทรานสปอร์ต</span>
           </h2>
           <p className="text-slate-600 text-sm sm:text-base mt-3 leading-relaxed">
             ภาพถ่ายจริงจากตัวรถคันจริง ทะเบียน 30-2542 ภูเก็ต สภาพใหม่ สะอาด หรูหราทุกมุมมอง

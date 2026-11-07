@@ -48,7 +48,7 @@ export default function FaqSection() {
             <span>คำถามที่พบบ่อย (FAQ)</span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-extrabold font-heading text-emerald-950 tracking-tight">
-            ข้อสงสัยเกี่ยวกับ <span className="emerald-gradient-text">บริการเช่าเหมารถทัวร์</span>
+            ข้อสงสัยเกี่ยวกับ <span className="emerald-gradient-text block sm:inline mt-1 sm:mt-0">บริการเช่าเหมารถทัวร์</span>
           </h2>
           <p className="text-slate-600 text-sm sm:text-base mt-3">
             รวมคำตอบที่คุณอยากรู้ก่อนตัดสินใจเดินทางกับเมืองสองย่า ทรานสปอร์ต

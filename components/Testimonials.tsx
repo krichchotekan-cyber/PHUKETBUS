@@ -19,7 +19,7 @@ export default function Testimonials({ testimonials }: TestimonialsProps) {
             <span>เสียงตอบรับ & ความประทับใจจริงจากลูกค้า</span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-extrabold font-heading text-emerald-950 tracking-tight">
-            การันตีความพึงพอใจ <span className="emerald-gradient-text">จากกรุ๊ปทัวร์ทั่วไทย</span>
+            การันตีความพึงพอใจ <span className="emerald-gradient-text block sm:inline mt-1 sm:mt-0">จากกรุ๊ปทัวร์ทั่วไทย</span>
           </h2>
           <p className="text-slate-600 text-sm sm:text-base mt-3 leading-relaxed">
             ความปลอดภัยและรอยยิ้มของท่าน คือความภาคภูมิใจสูงสุดของทีมงานเมืองสองย่า ทรานสปอร์ต

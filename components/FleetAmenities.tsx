@@ -85,7 +85,7 @@ export default function FleetAmenities({ amenities, gallery }: FleetAmenitiesPro
             <span>มาตรฐานอุปกรณ์ & ความสะดวกสบายระดับ VIP</span>
           </div>
           <h2 className="text-3xl sm:text-4xl font-extrabold font-heading text-emerald-950 tracking-tight">
-            สิ่งอำนวยความสะดวกบนรถ & <span className="emerald-gradient-text">แกลเลอรีภาพถ่ายจริง</span>
+            สิ่งอำนวยความสะดวกบนรถ & <span className="emerald-gradient-text block sm:inline mt-1 sm:mt-0">แกลเลอรีภาพถ่ายจริง</span>
           </h2>
           <p className="text-slate-600 text-sm sm:text-base mt-3 leading-relaxed">
             สัมผัสประสบการณ์เดินทางเหนือระดับ รถสภาพใหม่ ตรวจเช็คความพร้อมก่อนออกเดินทางทุกครั้ง

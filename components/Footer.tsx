@@ -20,7 +20,7 @@ export default function Footer({
   lineQrUrl = '/images/line-qr.jpg',
 }: FooterProps) {
   return (
-    <footer className="bg-emerald-950 text-white border-t border-emerald-900 pt-16 pb-12">
+    <footer className="bg-emerald-950 text-white border-t border-emerald-900 pt-16 pb-32 sm:pb-16">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-10 mb-12">
           {/* Brand Col with Transparent PNG Logo (No border, no shadow, no background box) */}
@@ -133,13 +133,21 @@ export default function Footer({
             </h4>
             <ul className="space-y-2 text-xs text-emerald-100">
               <li>
-                <Link href="/terms" className="hover:text-amber-300 transition-colors flex items-center gap-1.5">
-                  <span>ข้อกำหนดและเงื่อนไข (Terms)</span>
+                <Link
+                  href="/terms"
+                  className="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-emerald-900/70 border border-emerald-800 hover:border-amber-400 hover:text-amber-300 transition-colors"
+                >
+                  <ShieldCheck className="w-4 h-4 text-amber-300 shrink-0" />
+                  <span className="font-medium">ข้อกำหนดและเงื่อนไข (Terms & Conditions)</span>
                 </Link>
               </li>
               <li>
-                <Link href="/privacy" className="hover:text-amber-300 transition-colors flex items-center gap-1.5">
-                  <span>นโยบายความเป็นส่วนตัว & คุกกี้ (PDPA)</span>
+                <Link
+                  href="/privacy"
+                  className="inline-flex items-center gap-2 px-3 py-2 rounded-xl bg-emerald-900/70 border border-emerald-800 hover:border-amber-400 hover:text-amber-300 transition-colors"
+                >
+                  <ShieldCheck className="w-4 h-4 text-amber-300 shrink-0" />
+                  <span className="font-medium">นโยบายความเป็นส่วนตัว & คุกกี้ (PDPA)</span>
                 </Link>
               </li>
             </ul>
