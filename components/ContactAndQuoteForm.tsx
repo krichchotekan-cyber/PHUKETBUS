@@ -135,6 +135,19 @@ export default function ContactAndQuoteForm({
         });
       } catch (cErr) {}
 
+      // Dispatch real booking completion event for notification toast
+      if (typeof window !== 'undefined') {
+        window.dispatchEvent(
+          new CustomEvent('booking-completed', {
+            detail: {
+              customerName: formData.customerName,
+              destination: formData.destination,
+              passengerCount: formData.passengerCount,
+            },
+          })
+        );
+      }
+
       setSubmitted(true);
     } catch (err: any) {
       setErrorMsg(err.message || 'ไม่สามารถส่งข้อมูลได้ กรุณาลองใหม่อีกครั้ง');
