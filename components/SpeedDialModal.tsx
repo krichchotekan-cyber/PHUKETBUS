@@ -123,7 +123,7 @@ export default function SpeedDialModal({
           className="flex-[1.4] flex items-center justify-center gap-2 py-2.5 px-3 rounded-xl emerald-gradient-btn text-white font-bold text-sm shadow-md active:scale-98 cursor-pointer"
         >
           <PhoneCall className="w-4 h-4" />
-          <span>โทรด่วนเจ้าของ</span>
+          <span>สายด่วน</span>
         </button>
 
         <a
