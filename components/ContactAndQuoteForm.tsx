@@ -69,6 +69,25 @@ export default function ContactAndQuoteForm({
     }));
   }, [initialSeatPreference, initialStartDate, initialEndDate]);
 
+  React.useEffect(() => {
+    const handleTripRoute = (e: any) => {
+      if (e.detail) {
+        setFormData((prev) => ({
+          ...prev,
+          origin: e.detail.origin || prev.origin,
+          destination: e.detail.destination || prev.destination,
+          notes: e.detail.notes
+            ? prev.notes
+              ? `${prev.notes}\n${e.detail.notes}`
+              : e.detail.notes
+            : prev.notes,
+        }));
+      }
+    };
+    window.addEventListener('trip-route-selected', handleTripRoute);
+    return () => window.removeEventListener('trip-route-selected', handleTripRoute);
+  }, []);
+
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     if (!formData.customerName || !formData.phone) {

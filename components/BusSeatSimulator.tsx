@@ -12,6 +12,9 @@ import {
   Bath,
   Luggage,
   Compass,
+  Sun,
+  Moon,
+  Music,
 } from 'lucide-react';
 
 interface BusSeatSimulatorProps {
@@ -27,6 +30,7 @@ export default function BusSeatSimulator({
 }: BusSeatSimulatorProps) {
   const [activeDeck, setActiveDeck] = useState<1 | 2>(2);
   const [seatMode, setSeatMode] = useState<number>(defaultMode);
+  const [moodLight, setMoodLight] = useState<'day' | 'night'>('day');
 
   // Layout calculations (Purely informative diagram for whole coach charter)
   // Mode 40: Upper 32 seats (8 rows) + Lower 8 seats (2 rows) = 40 seats
@@ -110,26 +114,51 @@ export default function BusSeatSimulator({
             </button>
           </div>
 
-          {/* Seat Mode Switcher */}
-          <div className="flex items-center gap-2 w-full md:w-auto justify-end">
-            <span className="text-xs text-slate-500 font-medium flex items-center gap-1.5 hidden sm:flex">
-              <Users className="w-3.5 h-3.5 text-emerald-700" />
-              <span>เลือกรุ่นผังเหมาคัน:</span>
-            </span>
-            <div className="flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200 w-full sm:w-auto">
-              {[40, 44, 46].map((mode) => (
-                <button
-                  key={mode}
-                  onClick={() => setSeatMode(mode)}
-                  className={`flex-1 sm:flex-initial px-3.5 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
-                    seatMode === mode
-                      ? 'bg-emerald-800 text-white shadow-sm'
-                      : 'text-slate-600 hover:text-slate-900'
-                  }`}
-                >
-                  รุ่น {mode} ที่นั่ง
-                </button>
-              ))}
+          {/* Seat Mode Switcher & VIP Mood Light Gimmick */}
+          <div className="flex flex-wrap items-center gap-3 w-full md:w-auto justify-end">
+            {/* VIP Mood Light Switcher */}
+            <button
+              onClick={() => setMoodLight(moodLight === 'day' ? 'night' : 'day')}
+              className={`px-3.5 py-2 rounded-xl text-xs font-bold transition-all flex items-center gap-2 cursor-pointer border shadow-xs ${
+                moodLight === 'night'
+                  ? 'bg-gradient-to-r from-purple-950 via-indigo-950 to-slate-950 text-amber-300 border-purple-500 shadow-[0_0_15px_rgba(168,85,247,0.4)]'
+                  : 'bg-amber-50 hover:bg-amber-100 text-amber-900 border-amber-300'
+              }`}
+              title="คลิกสลับบรรยากาศแสงไฟห้องโดยสาร VIP"
+            >
+              {moodLight === 'night' ? (
+                <>
+                  <Moon className="w-3.5 h-3.5 text-purple-300 fill-purple-300 animate-pulse" />
+                  <span>โหมดไฟเธค VIP Karaoke</span>
+                </>
+              ) : (
+                <>
+                  <Sun className="w-3.5 h-3.5 text-amber-600" />
+                  <span>แสงกลางวัน Day Cruiser</span>
+                </>
+              )}
+            </button>
+
+            <div className="flex items-center gap-2">
+              <span className="text-xs text-slate-500 font-medium flex items-center gap-1.5 hidden sm:flex">
+                <Users className="w-3.5 h-3.5 text-emerald-700" />
+                <span>เลือกรุ่นผัง:</span>
+              </span>
+              <div className="flex items-center bg-slate-100 p-1 rounded-xl border border-slate-200 w-full sm:w-auto">
+                {[40, 44, 46].map((mode) => (
+                  <button
+                    key={mode}
+                    onClick={() => setSeatMode(mode)}
+                    className={`flex-1 sm:flex-initial px-3.5 py-2 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                      seatMode === mode
+                        ? 'bg-emerald-800 text-white shadow-sm'
+                        : 'text-slate-600 hover:text-slate-900'
+                    }`}
+                  >
+                    รุ่น {mode} ที่นั่ง
+                  </button>
+                ))}
+              </div>
             </div>
           </div>
         </div>
@@ -137,12 +166,34 @@ export default function BusSeatSimulator({
         {/* Coach Simulator Box */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
           {/* Main Visual Layout (Coach Chassis) */}
-          <div className="lg:col-span-8 bg-white rounded-3xl border border-emerald-100 p-5 sm:p-8 shadow-clean relative overflow-hidden">
+          <div
+            className={`lg:col-span-8 rounded-3xl p-5 sm:p-8 relative overflow-hidden transition-all duration-500 ${
+              moodLight === 'night'
+                ? 'bg-slate-950 text-white border-2 border-purple-500/70 shadow-[0_0_50px_rgba(168,85,247,0.35)]'
+                : 'bg-white text-slate-900 border border-emerald-100 shadow-clean'
+            }`}
+          >
+            {moodLight === 'night' && (
+              <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-pink-500 via-purple-500 to-cyan-400 animate-pulse shadow-[0_0_12px_rgba(236,72,153,0.9)]" />
+            )}
+
             {/* Front of bus indicator */}
-            <div className="flex items-center justify-between pb-4 border-b border-slate-100 mb-6">
+            <div
+              className={`flex items-center justify-between pb-4 border-b mb-6 ${
+                moodLight === 'night' ? 'border-purple-900/60' : 'border-slate-100'
+              }`}
+            >
               <div className="flex items-center gap-2">
-                <span className="w-2.5 h-2.5 rounded-full bg-emerald-600 animate-pulse" />
-                <span className="text-xs font-bold uppercase tracking-wider text-emerald-900">
+                <span
+                  className={`w-2.5 h-2.5 rounded-full animate-pulse ${
+                    moodLight === 'night' ? 'bg-purple-400' : 'bg-emerald-600'
+                  }`}
+                />
+                <span
+                  className={`text-xs font-bold uppercase tracking-wider ${
+                    moodLight === 'night' ? 'text-purple-300' : 'text-emerald-900'
+                  }`}
+                >
                   {activeDeck === 2
                     ? `ชั้น 2: โซนวิวพาโนรามา (${upperSeatsCount} ที่นั่ง VIP)`
                     : `ชั้น 1: โซนห้องรับรอง VIP + คนขับ + ห้องน้ำ (${lowerSeatsCount} ที่นั่ง)`}
@@ -150,12 +201,30 @@ export default function BusSeatSimulator({
               </div>
               <div className="text-xs text-slate-500 flex items-center gap-1.5">
                 <span>รุ่นรถ:</span>
-                <span className="text-emerald-800 font-bold">เช่าเหมาคัน {seatMode} ที่นั่ง VIP</span>
+                <span
+                  className={`font-bold ${
+                    moodLight === 'night' ? 'text-amber-300' : 'text-emerald-800'
+                  }`}
+                >
+                  เช่าเหมาคัน {seatMode} ที่นั่ง VIP
+                </span>
               </div>
             </div>
 
             {/* Coach Interior Canvas */}
-            <div className="relative mx-auto max-w-xl bg-slate-50 rounded-2xl border border-slate-200 p-4 sm:p-6 shadow-inner">
+            <div
+              className={`relative mx-auto max-w-xl rounded-2xl border p-4 sm:p-6 shadow-inner transition-colors duration-500 ${
+                moodLight === 'night'
+                  ? 'bg-slate-900 border-purple-800/80 shadow-[inset_0_0_20px_rgba(168,85,247,0.2)] text-white'
+                  : 'bg-slate-50 border-slate-200 text-slate-800'
+              }`}
+            >
+              {moodLight === 'night' && (
+                <div className="mb-4 py-2 px-3 rounded-xl bg-purple-950/80 border border-purple-500/40 text-purple-200 text-xs flex items-center justify-center gap-2 animate-pulse">
+                  <Music className="w-3.5 h-3.5 text-pink-400" />
+                  <span>ระบบเสียง &amp; แสงไฟเธค VIP Karaoke พร้อมเปิดบรรยากาศปาร์ตี้ตลอดการเดินทาง</span>
+                </div>
+              )}
               {/* Front Windshield Curved Glass / Front Nose */}
               <div className="w-full py-2.5 px-4 rounded-xl bg-emerald-900 text-center text-xs font-semibold text-white mb-5 flex items-center justify-center gap-2 shadow-sm">
                 <Compass className="w-4 h-4 text-emerald-300" />

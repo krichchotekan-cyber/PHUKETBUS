@@ -15,6 +15,9 @@ import ContactAndQuoteForm from './ContactAndQuoteForm';
 import Footer from './Footer';
 import SpeedDialModal from './SpeedDialModal';
 import PromoPopupModal from './PromoPopupModal';
+import BusScrollProgress from './BusScrollProgress';
+import TripEstimator from './TripEstimator';
+import LiveActivityToast from './LiveActivityToast';
 import { DatabaseSchema } from '@/lib/db';
 
 interface OnePageSaleProps {
@@ -58,6 +61,9 @@ export default function OnePageSale({ initialData }: OnePageSaleProps) {
 
   return (
     <div className="relative min-h-screen bg-slate-50 text-slate-800 selection:bg-emerald-700 selection:text-white">
+      {/* Interactive Bus Scroll Progress Indicator */}
+      <BusScrollProgress />
+
       {/* Sticky Header */}
       <Navbar
         onOpenPhoneModal={() => setPhoneModalOpen(true)}
@@ -102,6 +108,9 @@ export default function OnePageSale({ initialData }: OnePageSaleProps) {
         {/* Redesigned Popular Routes */}
         <PopularRoutes />
 
+        {/* Interactive Trip Distance & Itinerary Estimator */}
+        <TripEstimator />
+
         {/* Fleet & Amenities Showcase with Real Interior and Exterior Photos */}
         <FleetAmenities amenities={amenities || []} gallery={gallery || []} />
 
@@ -132,6 +141,9 @@ export default function OnePageSale({ initialData }: OnePageSaleProps) {
         lineUrl={settings.lineUrl}
         lineQrUrl={settings.lineQrUrl || '/images/line-qr.jpg'}
       />
+
+      {/* Live Social Proof Activity Toast */}
+      <LiveActivityToast />
 
       {/* Speed Dial Floating Action Button & Modal */}
       <SpeedDialModal
